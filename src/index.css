@@ -157,3 +157,12 @@
   .shadow-kiosk-accent\/30 { --tw-shadow-color: color-mix(in srgb, var(--kiosk-accent) 30%, transparent); --tw-shadow: var(--tw-shadow-colored); }
   .shadow-kiosk-success\/20 { --tw-shadow-color: color-mix(in srgb, var(--kiosk-success) 20%, transparent); --tw-shadow: var(--tw-shadow-colored); }
 }
+/* Keep the final dock instruction visible on typical showroom displays. */
+.completion-details > div { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+.completion-details > div > div { padding-top: .5rem; padding-bottom: .5rem; }
+button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px; }
+@media (max-width: 640px) {
+  .completion-details > div { grid-template-columns: 1fr; }
+  header { padding-left: 1rem !important; padding-right: 1rem !important; }
+  header .text-2xl { font-size: 1rem; }
+}

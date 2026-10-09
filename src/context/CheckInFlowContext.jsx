@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { findDelivery, deliveries } from "@/data/deliveries";
+import { findDelivery } from "@/data/deliveries";
 
 const CheckInFlowContext = createContext(null);
 
@@ -44,7 +44,8 @@ export function CheckInFlowProvider({ children }) {
 
   // Sets the matched delivery and driver info after a successful identification.
   const setIdentification = useCallback((deliveryRef, extraDriver = {}) => {
-    const d = findDelivery(deliveryRef) || deliveries[0];
+    const d = findDelivery(deliveryRef);
+    if (!d) throw new Error(`Unknown demo delivery: ${deliveryRef}`);
     setDelivery(d);
     setDriver({ name: d.driver, ...extraDriver });
   }, []);

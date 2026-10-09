@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Truck, Globe, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { Truck } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import LanguageButton from "./LanguageButton";
 

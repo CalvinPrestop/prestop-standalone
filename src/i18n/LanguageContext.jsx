@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { translations, languages } from "./translations";
 
 const LanguageContext = createContext(null);
@@ -9,6 +9,7 @@ function resolve(obj, path) {
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState("en");
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   // t("path.to.key", { var: value }) — supports {var} interpolation. Falls back to English, then to the key.
   const t = useCallback(

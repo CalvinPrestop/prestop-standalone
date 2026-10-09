@@ -24,9 +24,9 @@ export default function KioskButton({
   onClick,
   variant = "primary",
   size = "lg",
-  className,
-  disabled,
-  icon: Icon,
+  className = "",
+  disabled = false,
+  icon: Icon = undefined,
   iconRight = false,
   ...props
 }) {

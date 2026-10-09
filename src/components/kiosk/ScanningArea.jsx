@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 // Animated scanning area used by the passport / RFID / barcode / document demos.
-export default function ScanningArea({ icon: Icon, label, scanning, className, children }) {
+export default function ScanningArea({ icon: Icon, label, scanning = false, className = "", children = null }) {
   return (
     <div
       className={cn(

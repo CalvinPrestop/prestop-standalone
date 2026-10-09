@@ -4,13 +4,15 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function LanguageButton() {
-  const { lang, setLang, languages } = useLanguage();
+  const { lang, setLang, languages, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const current = languages.find((l) => l.code === lang);
 
   return (
     <div className="relative">
       <button
+        aria-label={t("welcome.selectLanguage")}
+        aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 px-5 py-3 rounded-lg bg-kiosk-surface border border-kiosk-border hover:bg-kiosk-panel text-white text-lg transition-colors"
       >

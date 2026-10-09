@@ -6,7 +6,7 @@ import { DocumentScannerService } from "@/services/hardware";
 import ScreenLayout from "@/components/kiosk/ScreenLayout";
 import ScanningArea from "@/components/kiosk/ScanningArea";
 import SuccessBadge from "@/components/kiosk/SuccessBadge";
-import InfoCard, { InfoRow } from "@/components/kiosk/InfoCard";
+
 import KioskButton from "@/components/kiosk/KioskButton";
 
 const DEMO_REF = "DEL-2026-00152";

@@ -21,7 +21,7 @@ import {
   SpeakerService,
 } from "@/services/hardware";
 import KioskButton from "@/components/kiosk/KioskButton";
-import { cn } from "@/lib/utils";
+
 
 // Hidden technician / hardware diagnostics screen.
 // Devices are explicitly marked SIMULATED here.

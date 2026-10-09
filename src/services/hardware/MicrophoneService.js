@@ -16,7 +16,7 @@ export const MicrophoneService = {
       throw new Error("Microphone not supported in this browser");
     }
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const AudioCtx = window.AudioContext;
     const audioContext = new AudioCtx();
     const source = audioContext.createMediaStreamSource(stream);
     const analyser = audioContext.createAnalyser();
@@ -24,17 +24,21 @@ export const MicrophoneService = {
     source.connect(analyser);
     const data = new Uint8Array(analyser.frequencyBinCount);
     let raf;
+    let stopped = false;
     const tick = () => {
+      if (stopped) return;
       analyser.getByteFrequencyData(data);
       let sum = 0;
       for (let i = 0; i < data.length; i++) sum += data[i];
       const avg = sum / data.length / 255;
       onLevel?.(avg);
-      raf = requestAnimationFrame(tick);
+      if (!stopped) raf = requestAnimationFrame(tick);
     };
-    tick();
+    raf = requestAnimationFrame(tick);
     return {
       stop() {
+        if (stopped) return;
+        stopped = true;
         cancelAnimationFrame(raf);
         stream.getTracks().forEach((t) => t.stop());
         audioContext.close().catch(() => {});

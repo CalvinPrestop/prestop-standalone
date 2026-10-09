@@ -4,7 +4,7 @@ import { useCheckInFlow } from "@/context/CheckInFlowContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { RFIDReaderService } from "@/services/hardware";
 import ScreenLayout from "@/components/kiosk/ScreenLayout";
-import ScanningArea from "@/components/kiosk/ScanningArea";
+
 import SuccessBadge from "@/components/kiosk/SuccessBadge";
 import InfoCard, { InfoRow } from "@/components/kiosk/InfoCard";
 import KioskButton from "@/components/kiosk/KioskButton";

@@ -9,16 +9,18 @@ import KioskButton from "@/components/kiosk/KioskButton";
 import { cn } from "@/lib/utils";
 
 export default function AudioAssistance() {
-  const { navigate } = useCheckInFlow();
+  const { navigate, delivery } = useCheckInFlow();
   const { t, lang } = useLanguage();
 
   const [speaking, setSpeaking] = useState(false);
   const [micState, setMicState] = useState("idle"); // idle | listening | denied | detected
   const [level, setLevel] = useState(0);
   const micRef = useRef(null);
+  const micAttempt = useRef(0);
 
   useEffect(() => {
     return () => {
+      micAttempt.current += 1;
       micRef.current?.stop();
       SpeakerService.stop();
     };
@@ -26,29 +28,38 @@ export default function AudioAssistance() {
 
   const handlePlay = async () => {
     setSpeaking(true);
-    await SpeakerService.speakMessage(t("audio.spoken"), lang);
+    await SpeakerService.speakMessage(t("audio.spoken", { dock: String(Number(delivery?.dock ?? 4)) }), lang);
     setSpeaking(false);
   };
 
   const handleStartMic = async () => {
+    const attempt = ++micAttempt.current;
     setMicState("listening");
     try {
-      micRef.current = await MicrophoneService.detectMicrophone((lvl) => {
+      const controller = await MicrophoneService.detectMicrophone((lvl) => {
+        if (attempt !== micAttempt.current) return;
         setLevel(lvl);
-        if (lvl > 0.12 && micState !== "detected") {
+        if (lvl > 0.12) {
           // Visually confirm detection after a brief moment of real input.
           setMicState("detected");
           micRef.current?.stop();
         }
       });
+      if (attempt !== micAttempt.current) controller.stop();
+      else micRef.current = controller;
     } catch {
+      if (attempt !== micAttempt.current) return;
       setMicState("denied");
     }
   };
 
   const handleSimulateVoice = async () => {
+    const attempt = ++micAttempt.current;
     setMicState("listening");
+    micRef.current?.stop();
+    micRef.current = null;
     await MicrophoneService.simulateVoiceDetection();
+    if (attempt !== micAttempt.current) return;
     setMicState("detected");
   };
 
@@ -58,7 +69,7 @@ export default function AudioAssistance() {
     <ScreenLayout
       title={t("audio.title")}
       footer={
-        <KioskButton variant="success" size="xl" onClick={handleContinue} disabled={micState !== "detected"}>
+        <KioskButton variant="success" size="xl" onClick={handleContinue} >
           {t("common.continue")}
         </KioskButton>
       }
@@ -74,7 +85,7 @@ export default function AudioAssistance() {
             {t("audio.playInstruction")}
           </KioskButton>
           {speaking && (
-            <p className="mt-5 text-lg text-kiosk-muted italic max-w-xs">"{t("audio.spoken")}"</p>
+            <p className="mt-5 text-lg text-kiosk-muted italic max-w-xs">"{t("audio.spoken", { dock: String(Number(delivery?.dock ?? 4)) })}"</p>
           )}
         </div>
 
@@ -108,7 +119,7 @@ export default function AudioAssistance() {
                 <KioskButton variant="primary" size="md" onClick={handleStartMic} disabled={micState === "listening"}>
                   {t("audio.startMic")}
                 </KioskButton>
-                <KioskButton variant="ghost" size="md" onClick={handleSimulateVoice} disabled={micState === "listening"}>
+                <KioskButton variant="ghost" size="md" onClick={handleSimulateVoice}>
                   {t("audio.simulateVoice")}
                 </KioskButton>
               </div>

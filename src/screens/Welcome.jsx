@@ -4,15 +4,15 @@ import { useCheckInFlow } from "@/context/CheckInFlowContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import KioskButton from "@/components/kiosk/KioskButton";
 import LanguageSelector from "@/components/kiosk/LanguageSelector";
-import { Image } from "@/components/ui/image";
+
 
 // Illustrated logistics scene for the hero panel (generated, hosted on app storage).
 const SCENE_URL =
-  "https://media.base44.com/images/public/6ac6246fddc6e72453373b83/47584732a_generated_image.png";
+  "/media/logistics-scene.png";
 
 // Faded full-screen background video: truck backing into the loading dock door.
 const BG_VIDEO_URL =
-  "https://media.base44.com/videos/public/6ac6246fddc6e72453373b83/4dc5e4eb1_Truck_backing_into_dock.mp4";
+  "/media/loading-dock.mp4";
 
 export default function Welcome() {
   const { startCheckIn } = useCheckInFlow();
@@ -31,7 +31,7 @@ export default function Welcome() {
   ];
 
   return (
-    <div className="relative h-full w-full overflow-hidden animate-fade-in">
+    <div className="relative h-full w-full overflow-y-auto animate-fade-in">
       {/* Faded background video — truck backing into the dock, blended into the theme */}
       <div className="absolute inset-0 pointer-events-none">
         <video
@@ -46,16 +46,16 @@ export default function Welcome() {
         <div className="absolute inset-0 bg-gradient-to-t from-kiosk-bg via-kiosk-bg/45 to-kiosk-bg/20" />
       </div>
 
-      <div className="relative z-10 h-full w-full flex flex-col">
+      <div className="relative z-10 min-h-full w-full flex flex-col">
       {/* Hero — two columns */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 px-12 pt-8 pb-6 min-h-0">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-6 px-6 lg:px-12 pt-6 pb-6 min-h-0">
         {/* Left: call to action */}
         <div className="flex flex-col justify-center max-w-2xl">
-          <h1 className="text-7xl xl:text-8xl font-extrabold text-white tracking-tight leading-none mb-4">
+          <h1 className="text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-none mb-4">
             {t("welcome.title")}
           </h1>
-          <p className="text-4xl xl:text-5xl text-kiosk-accent font-bold mb-6">{t("welcome.subtitle")}</p>
-          <p className="text-2xl text-kiosk-muted mb-10 max-w-xl">{t("welcome.supporting")}</p>
+          <p className="text-3xl xl:text-4xl text-kiosk-accent font-bold mb-6">{t("welcome.subtitle")}</p>
+          <p className="text-2xl text-kiosk-muted mb-6 max-w-xl">{t("welcome.supporting")}</p>
 
           <KioskButton
             variant="primary"
@@ -63,14 +63,14 @@ export default function Welcome() {
             icon={ArrowRight}
             iconRight
             onClick={startCheckIn}
-            className="self-start px-16 py-10 text-4xl rounded-2xl"
+            className="self-start px-10 py-6 text-3xl rounded-2xl"
           >
             {t("welcome.start")}
           </KioskButton>
 
           <p className="text-lg text-kiosk-muted/80 mt-6 max-w-xl">{t("welcome.helper")}</p>
 
-          <div className="flex flex-wrap gap-x-6 gap-y-3 mt-8">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 mt-5">
             {features.map((f) => (
               <div key={f.key} className="flex items-center gap-2 text-lg text-white/90">
                 <span className="w-6 h-6 rounded-full bg-kiosk-success/20 flex items-center justify-center">
@@ -83,9 +83,9 @@ export default function Welcome() {
         </div>
 
         {/* Right: logistics visual panel */}
-        <div className="relative rounded-3xl overflow-hidden border border-kiosk-border shadow-2xl min-h-[320px]">
+        <div className="relative rounded-3xl overflow-hidden border border-kiosk-border shadow-2xl min-h-[320px] hidden lg:block">
           <div className="absolute inset-0">
-            <Image src={SCENE_URL} fittingType="fill" className="block w-full h-full" />
+            <img src={SCENE_URL} alt="" className="block w-full h-full object-cover" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a1a33] via-[#0a1a33]/30 to-transparent" />
 

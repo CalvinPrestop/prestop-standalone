@@ -1,62 +1,38 @@
-# Base44 Project
+# Prestop showroom demo
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+A standalone touchscreen demonstration of the driver check-in experience. All passport, RFID, barcode and document scans use sample data. No Base44 account, server or login is needed.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Start
 
-## Prerequisites
+On Windows, double-click **START-DEMO.cmd** to build and open the demo. Keep its window open during the presentation. The first run installs dependencies and needs internet. Later runs work offline.
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
-5. Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) — the local Base44 backend runs on it.
 
-Run `base44 --help` (or see the [CLI reference](https://docs.base44.com/developers/references/cli/commands/introduction)) for the full command surface.
+Install Node.js 22.12 or newer, then open a terminal in this folder:
 
-## Run Locally
+    npm install
+    npm run dev
 
-Three commands, from the project root:
+Open the address printed in the terminal. Press F11 in the browser for a fullscreen showroom presentation.
 
-```bash
-base44 login   # one-time per machine
-base44 link    # one-time per clone
-base44 dev     # local backend + frontend together
-```
+## Build and run the finished demo
 
-Open the frontend URL that `base44 dev` prints (typically `http://localhost:5173`).
+    npm run build
+    npm run preview -- --host 0.0.0.0
 
-Notes:
+Keep the terminal running. Open the printed address on the kiosk. Serve the build through a web server; do not double-click index.html.
 
-- **Every fresh clone needs `base44 link`.** It writes `base44/.app.jsonc` (the app-id pointer), which is deliberately gitignored. Your app id is in the Builder URL (`app.base44.com/apps/<id>/...`); `base44 link --help` shows the non-interactive flags.
-- **`base44 dev` runs the frontend for you** (via `site.serveCommand` in this repo's `base44/config.jsonc`) — never run `npm run dev` yourself: alone it serves a UI with no backend behind it (`[base44] Proxy not enabled`, every `/api` call fails), and alongside `base44 dev` the second Vite silently takes the next port and you end up looking at the wrong one.
-- **The app must be published at least once for the UI to load under `base44 dev`.** The frontend boots by fetching app settings from the hosted app; before the first publish that fails and every page redirects to login. The local API works regardless.
-- Entities, functions, and auth run locally — entity data is **in-memory only**, wiped when `base44 dev` restarts. Everything else (Core integrations, OAuth login) is forwarded to your deployed app. Full breakdown: [Local development overview](https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview).
+The welcome image and looping video are bundled in public/media and work without internet once dependencies are installed. Browser speech uses voices installed on the showroom computer; install the desired language voices before presenting offline. Microphone access is optional, and visitors can simulate detection or continue directly.
 
-## Frontend Only, Hosted Backend
+## Presenting
 
-To work on just the frontend against your app's live hosted backend:
+Start check-in, choose a visit reason, and select any of the four identification methods. Tap the simulate scan button, continue to the delivery details, optionally scan a document, then try audio assistance and finish. Completion returns to the welcome screen after 15 seconds. Inactive sessions reset after 90 seconds plus a 15-second warning. The welcome screen stays on display without an inactivity popup.
 
-```bash
-base44 dev --remote
-```
+Switch between English, Dutch, German and French using the language selector. Tap the logo five times within 2.5 seconds to open diagnostics. These tests demonstrate devices using simulated data.
 
-⚠️ In this mode writes go to your app's **production data** — plain `base44 dev` keeps everything local.
+## Verification
 
-## Publish Your Changes
+    npm run build
+    npm run lint
+    npm run typecheck
 
-After pushing your changes to git, open the Base44 dashboard and publish the app:
-
-```bash
-base44 dashboard open
-```
-
-This repo syncs to Base44 through git, so publish from the dashboard rather than `base44 deploy` — a CLI deploy ships your local tree directly, bypassing the sync, and the deployed state silently diverges from the repo.
-
-## Docs & Support
-
-GitHub integration: [https://docs.base44.com/developers/app-code/local-development/github](https://docs.base44.com/developers/app-code/local-development/github)
-
-Local development: [https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview](https://docs.base44.com/developers/backend/overview/local-dev/local-development-overview)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Before an event, check the display size, volume, installed speech voices and video playback on the actual kiosk. No check-ins or identity documents are stored; refresh clears session state.

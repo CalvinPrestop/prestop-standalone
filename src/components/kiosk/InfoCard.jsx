@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-export function InfoRow({ label, value, highlight, mono }) {
+export function InfoRow({ label, value, highlight = false, mono = false }) {
   return (
     <div className="flex justify-between items-center py-4 border-b border-kiosk-border/40 last:border-0 gap-6">
       <span className="text-xl text-kiosk-muted whitespace-nowrap">{label}</span>
@@ -18,7 +18,7 @@ export function InfoRow({ label, value, highlight, mono }) {
   );
 }
 
-export default function InfoCard({ title, children, className, accent }) {
+export default function InfoCard({ title = "", children, className = "", accent = false }) {
   return (
     <div
       className={cn(

@@ -39,7 +39,8 @@ function KioskShell() {
   const [logoTaps, setLogoTaps] = useState([]);
 
   const { warning, countdown, continueSession } = useIdleTimer({
-    idleMs: 60000,
+    enabled: screen !== "welcome" || technician,
+    idleMs: 90000,
     warningMs: 15000,
     onTimeout: () => {
       reset();
@@ -69,7 +70,7 @@ function KioskShell() {
   );
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-kiosk-bg text-white overflow-hidden">
+    <div className="h-[100dvh] w-full flex flex-col bg-kiosk-bg text-white overflow-hidden">
       <GlobalHeader onLogoTap={handleLogoTap} />
       <main className="flex-1 relative overflow-hidden">{Screen}</main>
       {warning && <IdleWarning countdown={countdown} onContinue={continueSession} />}

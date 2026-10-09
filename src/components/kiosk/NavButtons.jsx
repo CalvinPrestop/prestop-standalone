@@ -12,7 +12,7 @@ export default function NavButtons({ showBack = true, showHome = true }) {
   if (screen === "welcome") return null;
 
   return (
-    <div className="absolute top-6 left-8 flex gap-4 z-20">
+    <div className="relative flex flex-wrap gap-4 z-20 shrink-0 mb-4">
       {showBack && (
         <KioskButton variant="ghost" size="md" icon={ArrowLeft} onClick={goBack}>
           {t("common.back")}

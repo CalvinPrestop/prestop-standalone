@@ -23,7 +23,7 @@ export default function CheckInComplete() {
 
   if (!delivery) return null;
 
-  const dockWord = "four"; // spoken dock number for the demo (dock 04)
+  const dockWord = String(Number(delivery.dock));
 
   const handlePlayDirections = async () => {
     setSpeaking(true);
@@ -32,35 +32,35 @@ export default function CheckInComplete() {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center px-8 animate-fade-in">
-      <div className="flex flex-col items-center gap-6 mb-8">
-        <div className="w-36 h-36 rounded-full bg-kiosk-success/15 flex items-center justify-center animate-scale-in">
-          <CheckCircle2 className="w-24 h-24 text-kiosk-success" strokeWidth={2.5} />
+    <div className="h-full w-full overflow-y-auto flex flex-col items-center px-8 py-4 animate-fade-in">
+      <div className="flex flex-col items-center gap-2 mb-4">
+        <div className="w-16 h-16 rounded-full bg-kiosk-success/15 flex items-center justify-center animate-scale-in">
+          <CheckCircle2 className="w-10 h-10 text-kiosk-success" strokeWidth={2.5} />
         </div>
-        <h1 className="text-6xl font-extrabold text-kiosk-success tracking-tight">{t("complete.title")}</h1>
+        <h1 className="text-4xl font-extrabold text-kiosk-success tracking-tight">{t("complete.title")}</h1>
       </div>
 
-      <div className="mb-8 text-center">
+      <div className="mb-4 text-center">
         <div className="text-xl text-kiosk-muted uppercase tracking-widest mb-2">{t("complete.dock")}</div>
-        <div className="text-8xl font-extrabold text-white leading-none">{delivery.dock}</div>
+        <div className="text-6xl font-extrabold text-white leading-none">{delivery.dock}</div>
       </div>
 
-      <p className="text-3xl text-white font-semibold mb-8 text-center max-w-3xl">
+      <p className="text-2xl text-white font-semibold mb-4 text-center max-w-3xl">
         {t("complete.proceed", { warehouse: delivery.warehouse, dock: delivery.dock })}
       </p>
 
-      <InfoCard className="max-w-xl mb-8">
+      <InfoCard className="max-w-4xl mb-4 p-4 completion-details">
         <InfoRow label={t("complete.driver")} value={delivery.driver} />
         <InfoRow label={t("complete.company")} value={delivery.company} />
         <InfoRow label={t("complete.delivery")} value={delivery.reference} mono />
         <InfoRow label={t("complete.dockLabel")} value={delivery.dock} highlight />
       </InfoCard>
 
-      <div className="flex flex-col items-center gap-6">
-        <KioskButton variant="primary" size="lg" icon={Volume2} onClick={handlePlayDirections} disabled={speaking}>
+      <div className="flex flex-col items-center gap-3">
+        <KioskButton variant="primary" size="md" icon={Volume2} onClick={handlePlayDirections} disabled={speaking}>
           {t("complete.playDirections")}
         </KioskButton>
-        <p className="text-2xl text-kiosk-muted">{t("complete.thankYou")}</p>
+        <p className="text-lg text-kiosk-muted">{t("complete.thankYou")}</p>
         <KioskButton variant="ghost" size="md" onClick={reset}>
           {t("complete.finish")}
         </KioskButton>
