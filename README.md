@@ -2,6 +2,10 @@
 
 A standalone touchscreen demonstration of the driver check-in experience. All passport, RFID, barcode and document scans use sample data. No Base44 account, server or login is needed.
 
+## Hosted showroom demo
+
+Open [the Netlify demo](https://fabulous-gaufre-1a3d46.netlify.app). Use this address as the Internet address in your SiteKiosk Online browser project. The kiosk needs internet to load this hosted version.
+
 ## Start
 
 On Windows, double-click **START-DEMO.cmd** to build and open the demo. Keep its window open during the presentation. The first run installs dependencies and needs internet. Later runs work offline.
