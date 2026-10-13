@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BookUser } from "lucide-react";
 import { useCheckInFlow } from "@/context/CheckInFlowContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,20 +12,44 @@ import KioskButton from "@/components/kiosk/KioskButton";
 const DEMO_REF = "DEL-2026-00152";
 
 export default function PassportScan() {
-  const { navigate, setIdentification } = useCheckInFlow();
+  const { navigate, setIdentification, setDriver } = useCheckInFlow();
   const { t } = useLanguage();
-  const [state, setState] = useState("idle"); // idle | scanning | success
+  const [state, setState] = useState("idle"); // idle | initializing | ready | scanning | success | error
   const [data, setData] = useState(null);
 
-  const handleSimulate = async () => {
-    setState("scanning");
-    const result = await PassportReaderService.scanPassport();
-    setData(result);
-    setState("success");
+  const [error, setError] = useState(null);
+  const active = useRef(null);
+  useEffect(() => () => active.current?.abort(), []);
+  const handleScan = async () => {
+    active.current?.abort();
+    const controller = new AbortController();
+    active.current = controller;
+    setError(null);
+    setData(null);
+    setDriver(null);
+    setState('initializing');
+    try {
+      await PassportReaderService.initialize(controller.signal);
+      if (controller.signal.aborted) return;
+      setState('ready');
+      setState("scanning");
+      const result = await PassportReaderService.scanPassport(controller.signal);
+      if (controller.signal.aborted) return;
+      setDriver(result);
+      setData(result);
+      setState("success");
+    } catch (err) {
+      if (controller.signal.aborted) return;
+      setError(err.message);
+      setState('error');
+    }
   };
 
   const handleContinue = () => {
     setIdentification(DEMO_REF, {
+      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
       nationality: data.nationality,
       documentType: data.documentType,
       documentNumber: data.documentNumber,
@@ -44,12 +68,14 @@ export default function PassportScan() {
             {t("common.continue")}
           </KioskButton>
         ) : (
-          <KioskButton variant="primary" size="lg" onClick={handleSimulate} disabled={state === "scanning"}>
-            {t("passport.simulate")}
+          <KioskButton variant="primary" size="lg" onClick={handleScan} disabled={state === "scanning" || state === "initializing"}>
+            {PassportReaderService.isSimulated ? t("passport.simulate") : state === "error" ? "Retry scan" : state === "initializing" ? "Preparing scanner…" : "Scan passport"}
           </KioskButton>
         )
       }
     >
+      {PassportReaderService.isSimulated && <p className="text-xl text-kiosk-muted">Development simulation — fictional Utopia passport</p>}
+      {error && <p role="alert" className="text-xl text-kiosk-muted">{error}</p>}
       {state === "success" ? (
         <div className="flex flex-col items-center gap-8 w-full max-w-2xl">
           <SuccessBadge label={t("passport.success")} size="xl" />
@@ -60,7 +86,7 @@ export default function PassportScan() {
             <InfoRow label={t("passport.documentNumber")} value={data.documentNumber} mono />
             <InfoRow label={t("passport.dateOfBirth")} value={data.dateOfBirth} />
           </InfoCard>
-          <p className="text-2xl font-bold text-kiosk-success">{t("passport.verified")} ✓</p>
+          <p className="text-2xl font-bold text-kiosk-success">MRZ check digits passed ✓</p>
         </div>
       ) : (
         <ScanningArea icon={BookUser} label={state === "scanning" ? t("passport.waiting") : t("passport.waiting")} scanning={state === "scanning"} />

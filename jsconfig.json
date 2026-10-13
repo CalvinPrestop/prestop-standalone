@@ -30,7 +30,8 @@
     "src/hooks/**/*.js",
     "src/i18n/**/*.jsx",
     "src/i18n/**/*.js",
-    "src/services/**/*.js"
+    "src/services/**/*.js",
+    "src/vite-env.d.ts"
   ],
   "exclude": [
     "node_modules",

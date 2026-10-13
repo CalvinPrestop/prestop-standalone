@@ -7,7 +7,7 @@ import InfoCard, { InfoRow } from "@/components/kiosk/InfoCard";
 import KioskButton from "@/components/kiosk/KioskButton";
 
 export default function CheckInComplete() {
-  const { delivery, reset } = useCheckInFlow();
+  const { delivery, driver, reset } = useCheckInFlow();
   const { t, lang } = useLanguage();
   const [speaking, setSpeaking] = useState(false);
   const timerRef = useRef(null);
@@ -50,7 +50,7 @@ export default function CheckInComplete() {
       </p>
 
       <InfoCard className="max-w-4xl mb-4 p-4 completion-details">
-        <InfoRow label={t("complete.driver")} value={delivery.driver} />
+        <InfoRow label={t("complete.driver")} value={driver?.name || delivery.driver} />
         <InfoRow label={t("complete.company")} value={delivery.company} />
         <InfoRow label={t("complete.delivery")} value={delivery.reference} mono />
         <InfoRow label={t("complete.dockLabel")} value={delivery.dock} highlight />

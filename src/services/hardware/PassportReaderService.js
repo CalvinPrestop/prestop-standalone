@@ -1,23 +1,24 @@
-// PassportReaderService
-// Currently returns simulated passport/ID data.
-// Replace `scanPassport` with the real passport reader SDK integration later.
 
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
-
-export const PassportReaderService = {
+import { createPassportClient } from './passportClient';
+const simulated = import.meta.env.DEV && import.meta.env.VITE_SCANNER_SIMULATED === 'true';
+const real = createPassportClient({ baseUrl: import.meta.env.VITE_SCANNER_API_URL || 'http://127.0.0.1:5081' });
+export const PassportReaderService = simulated ? {
   isSimulated: true,
-
-  async scanPassport() {
-    // Simulate the read time of a real document reader.
-    await delay(1200);
+  async initialize() { return { success: true }; },
+  async scanPassport(signal) {
+    await new Promise((resolve, reject) => {
+      const abort = () => { clearTimeout(timer); reject(new Error('Scan cancelled.')); };
+      const timer = setTimeout(() => { signal?.removeEventListener('abort', abort); resolve(); }, 1200);
+      signal?.addEventListener('abort', abort, { once: true });
+      if (signal?.aborted) abort();
+    });
     return {
-      name: "John Smith",
-      nationality: "Netherlands",
-      documentType: "Passport",
-      documentNumber: "N12345678",
-      dateOfBirth: "14-05-1985",
+      success: true, checkDigitsValid: true, name: 'ANNA MARIA ERIKSSON',
+      firstName: 'ANNA MARIA', lastName: 'ERIKSSON', nationality: 'UTO',
+      documentType: 'Passport', documentNumber: 'L898902C3',
+      dateOfBirth: '74-08-12 (YY-MM-DD; century unverified)',
+      expiryDate: '12-04-15 (YY-MM-DD; century unverified)',
     };
   },
-};
-
+} : { ...real, isSimulated: false };
 export default PassportReaderService;

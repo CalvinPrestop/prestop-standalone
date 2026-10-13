@@ -24,9 +24,9 @@ import KioskButton from "@/components/kiosk/KioskButton";
 
 
 // Hidden technician / hardware diagnostics screen.
-// Devices are explicitly marked SIMULATED here.
+// Passport scanning uses hardware unless development simulation is explicitly enabled.
 const buildDevices = (t) => [
-  { key: "passport", icon: BookUser, name: t("technician.devices.passport"), test: () => PassportReaderService.scanPassport() },
+  { key: "passport", icon: BookUser, name: t("technician.devices.passport"), simulated: PassportReaderService.isSimulated, test: () => PassportReaderService.scanPassport() },
   { key: "document", icon: FileText, name: t("technician.devices.document"), test: () => DocumentScannerService.scanDocument() },
   { key: "barcode", icon: ScanBarcode, name: t("technician.devices.barcode"), test: () => BarcodeScannerService.readBarcode() },
   { key: "rfid", icon: CreditCard, name: t("technician.devices.rfid"), test: () => RFIDReaderService.readRFID() },
@@ -43,17 +43,19 @@ export default function TechnicianDiagnostics({ onExit }) {
 
   const runOne = async (key, test) => {
     setResults((r) => ({ ...r, [key]: "testing" }));
-    await test();
-    setResults((r) => ({ ...r, [key]: "pass" }));
+    try {
+      await test();
+      setResults((r) => ({ ...r, [key]: "pass" }));
+    } catch {
+      setResults((r) => ({ ...r, [key]: "fail" }));
+    }
   };
 
   const runAll = async () => {
     setRunningAll(true);
     setResults({});
     for (const d of devices) {
-      setResults((r) => ({ ...r, [d.key]: "testing" }));
-      await d.test();
-      setResults((r) => ({ ...r, [d.key]: "pass" }));
+      await runOne(d.key, d.test);
     }
     setRunningAll(false);
   };
@@ -98,13 +100,13 @@ export default function TechnicianDiagnostics({ onExit }) {
                   <Loader2 className="w-9 h-9 text-kiosk-accent animate-spin" />
                 ) : (
                   <span className="px-3 py-1 rounded-full bg-kiosk-warning/15 text-kiosk-warning text-sm font-bold">
-                    {t("technician.simulated")}
+                    {d.simulated === false ? "Hardware" : t("technician.simulated")}
                   </span>
                 )}
               </div>
               <h3 className="text-2xl font-bold text-white mb-1">{d.name}</h3>
               <p className="text-base text-kiosk-muted mb-5">
-                {status === "pass" ? t("technician.ready") : t("technician.simulated")} / {t("technician.ready")}
+                {status === "fail" ? "Test failed - check scanner service" : status === "pass" ? t("technician.ready") : d.simulated === false ? "Hardware" : t("technician.simulated")} / {t("technician.ready")}
               </p>
               <KioskButton
                 variant="dark"

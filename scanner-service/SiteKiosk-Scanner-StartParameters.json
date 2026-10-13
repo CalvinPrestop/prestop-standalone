@@ -1,0 +1,13 @@
+{
+  "kind": "Executable",
+  "executable": {
+    "filePath": "C:\\Windows\\System32\\cmd.exe",
+    "arguments": "/d /c \"\"C:\\PrestopScanner\\deployment\\win-x86\\Start-Scanner.bat\" --unattended\"",
+    "workingDirectory": "C:\\PrestopScanner\\deployment\\win-x86",
+    "useShellExecute": false,
+    "startAsChildProcess": true,
+    "reportStandardOut": false,
+    "reportStandardError": false,
+    "verb": ""
+  }
+}

@@ -7,7 +7,7 @@ import InfoCard, { InfoRow } from "@/components/kiosk/InfoCard";
 import KioskButton from "@/components/kiosk/KioskButton";
 
 export default function DeliveryLookup() {
-  const { delivery, navigate } = useCheckInFlow();
+  const { delivery, driver, navigate } = useCheckInFlow();
   const { t } = useLanguage();
 
   if (!delivery) return null;
@@ -22,7 +22,7 @@ export default function DeliveryLookup() {
       }
     >
       <InfoCard accent className="max-w-2xl">
-        <InfoRow label={t("deliveryLookup.driver")} value={delivery.driver} />
+        <InfoRow label={t("deliveryLookup.driver")} value={driver?.name || delivery.driver} />
         <InfoRow label={t("deliveryLookup.transportCompany")} value={delivery.company} />
         <InfoRow label={t("deliveryLookup.deliveryRef")} value={delivery.reference} mono />
         <InfoRow label={t("deliveryLookup.purchaseOrder")} value={delivery.order} mono />

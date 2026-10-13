@@ -1,0 +1,7 @@
+# Generated binaries and SDK redistributables are private; never publish these to a public repository.
+**/bin/
+**/obj/
+deployment/
+PrestopThalesScanner/publish/
+PrestopThalesScanner/sdk/*.dll
+Tests/*.log
